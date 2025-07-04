@@ -1,17 +1,34 @@
+# Gradle
+.gradle/
+build/
+.externalNativeBuild/
+.cxx/
+local.properties
+
+# IntelliJ / Android Studio
+.idea/
 *.iml
-.gradle
-/local.properties
+*.ipr
+*.iws
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
 /.idea/workspace.xml
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
+
+# Systemowe
 .DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
-local.properties
-app/google-services.json
-app/build/
+Thumbs.db
+
+# Zewnętrzne pliki
+captures/
+*.log
+*.keystore
+*.jks
+*.apk
+*.zip
+*.jar
+
+# Ignoruj też wszystko z katalogu `.gradle/caches` (tu były te długie błędy)
+.gradle/caches/
