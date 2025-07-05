@@ -1,7 +1,11 @@
 package com.example.digitaldiary.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "notes")
 data class Note(
-    val id: String = "",
+    @PrimaryKey val id: String = "",
     val text: String = "",
     val location: String = "",
     val imageUrl: String? = null,
