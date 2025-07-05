@@ -20,6 +20,9 @@ import com.example.digitaldiary.viewmodel.MainViewModel
 import com.example.digitaldiary.viewmodel.MainViewModelFactory
 import androidx.activity.result.contract.ActivityResultContracts
 import android.app.Application
+import android.Manifest
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
 
 class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels {
@@ -42,10 +45,12 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
+@OptIn(ExperimentalPermissionsApi::class)
 fun MainScreen(viewModel: MainViewModel, modifier: Modifier = Modifier) {
     var noteText by remember { mutableStateOf(TextFieldValue("")) }
     val context = LocalContext.current
     val location by viewModel.location.observeAsState()
+    val locationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
     val imageUrl by viewModel.imageUrl.observeAsState()
     val audioUrl by viewModel.audioUrl.observeAsState()
     val notes by viewModel.notes.observeAsState(emptyList())
@@ -66,8 +71,14 @@ fun MainScreen(viewModel: MainViewModel, modifier: Modifier = Modifier) {
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { viewModel.captureLocation() }, modifier = Modifier.fillMaxWidth()) {
-            Text("Pobierz lokalizację")
+        if (locationPermissionState.status.isGranted) {
+            Button(onClick = { viewModel.captureLocation() }, modifier = Modifier.fillMaxWidth()) {
+                Text("Pobierz lokalizację")
+            }
+        } else {
+            Button(onClick = { locationPermissionState.launchPermissionRequest() }, modifier = Modifier.fillMaxWidth()) {
+                Text("Poproś o dostęp do lokalizacji")
+            }
         }
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = { viewModel.addImage() }, modifier = Modifier.fillMaxWidth()) {
