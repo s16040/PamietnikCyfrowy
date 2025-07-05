@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
@@ -42,6 +43,10 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen(viewModel: MainViewModel, modifier: Modifier = Modifier) {
     var noteText by remember { mutableStateOf(TextFieldValue("")) }
+    val location by viewModel.location.observeAsState()
+    val imageUrl by viewModel.imageUrl.observeAsState()
+    val audioUrl by viewModel.audioUrl.observeAsState()
+    val notes by viewModel.notes.observeAsState(emptyList())
 
     Column(
         modifier = modifier
@@ -51,7 +56,10 @@ fun MainScreen(viewModel: MainViewModel, modifier: Modifier = Modifier) {
         Header()
         TextField(
             value = noteText,
-            onValueChange = { noteText = it },
+            onValueChange = {
+                noteText = it
+                viewModel.onNoteChange(it.text)
+            },
             label = { Text("Wprowadź notatkę") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -70,6 +78,24 @@ fun MainScreen(viewModel: MainViewModel, modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = { viewModel.submitNote() }, modifier = Modifier.fillMaxWidth()) {
             Text("Zatwierdź notatkę")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        location?.let {
+            Text("Lokalizacja: ${'$'}{it.latitude}, ${'$'}{it.longitude}")
+        }
+        imageUrl?.let {
+            Text("Zdjęcie: ${'$'}it")
+        }
+        audioUrl?.let {
+            Text("Audio: ${'$'}it")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        notes.forEach { note ->
+            Text("- ${'$'}{note.text} (${ '$'}{note.location})")
         }
     }
 }

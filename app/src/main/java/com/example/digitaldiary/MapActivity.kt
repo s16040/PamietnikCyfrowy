@@ -42,10 +42,10 @@ fun MapScreen() {
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState
     ) {
-//        Marker(
-//            position = singapore,
-//            title = "Marker in Singapore",
-//            snippet = "This is a snippet"
-//        )
+        Marker(
+            position = singapore,
+            title = "Marker in Singapore",
+            snippet = "This is a snippet"
+        )
     }
 }

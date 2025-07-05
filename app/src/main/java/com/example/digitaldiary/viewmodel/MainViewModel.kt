@@ -21,6 +21,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _location = MutableLiveData<Location>()
     val location: LiveData<Location> get() = _location
 
+    private val _imageUrl = MutableLiveData<String?>()
+    val imageUrl: LiveData<String?> get() = _imageUrl
+
+    private val _audioUrl = MutableLiveData<String?>()
+    val audioUrl: LiveData<String?> get() = _audioUrl
+
+    private val _notes = MutableLiveData<List<Note>>(emptyList())
+    val notes: LiveData<List<Note>> get() = _notes
+
     private val fusedLocationProviderClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(application)
 
@@ -46,14 +55,36 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun addImage() {
-        // Logika do dodawania zdjęcia
+        // W prawdziwej aplikacji tutaj uruchamiany byłby intent do aparatu
+        // lub wyboru zdjęcia z galerii. Na potrzeby przykładowej implementacji
+        // zapisujemy jedynie przykładową nazwę pliku.
+        _imageUrl.value = "image_${System.currentTimeMillis()}.jpg"
     }
 
     fun recordAudio() {
-        // Logika do nagrywania dźwięku
+        // Podobnie jak przy zdjęciu, pełna implementacja wymagałaby użycia
+        // odpowiednich API Androida. Tutaj jedynie ustawiamy przykładową ścieżkę
+        // do nagranego pliku dźwiękowego.
+        _audioUrl.value = "audio_${System.currentTimeMillis()}.m4a"
     }
 
     fun submitNote() {
-        // Logika do zapisu notatki
+        val text = _note.value ?: return
+        val locationString = _location.value?.let { "${it.latitude},${it.longitude}" } ?: ""
+        val newNote = Note(
+            id = System.currentTimeMillis().toString(),
+            text = text,
+            location = locationString,
+            imageUrl = _imageUrl.value,
+            audioUrl = _audioUrl.value
+        )
+
+        val current = _notes.value ?: emptyList()
+        _notes.value = current + newNote
+
+        // Wyczyszczenie pól po zapisaniu notatki
+        _note.value = ""
+        _imageUrl.value = null
+        _audioUrl.value = null
     }
 }
