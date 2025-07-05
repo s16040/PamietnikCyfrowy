@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -120,7 +121,13 @@ fun MainScreen(viewModel: MainViewModel, modifier: Modifier = Modifier) {
             val lng = note.longitude ?: 0.0
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        val intent = android.content.Intent(context, NoteDetailActivity::class.java)
+                        intent.putExtra("noteId", note.id)
+                        context.startActivity(intent)
+                    }
             ) {
                 Text(
                     "${'$'}{note.text} (${ '$'}lat, ${ '$'}lng)",

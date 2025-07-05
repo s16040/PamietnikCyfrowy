@@ -8,6 +8,7 @@ Prosta aplikacja w Kotlinie stworzona z użyciem Jetpack Compose. Umożliwia zap
 - możliwość dodania zdjęcia i nagrania (przykładowe implementacje)
 - lista notatek z opcją usuwania
 - wyświetlanie notatek na mapie z markerami
+- podgląd pojedynczej notatki z możliwością odtworzenia nagrania
 
 ## Budowanie projektu
 
@@ -26,3 +27,4 @@ Testy uruchomimy poleceniem:
 Ze względu na ograniczenia środowiska uruchomieniowego w repozytorium testy mogą zakończyć się niepowodzeniem, jeśli SDK nie jest dostępne.
 
 Do poprawnego działania map konieczny jest klucz API Google Maps. W pliku `local.properties` dodaj wpis `MAPS_API_KEY=TWÓJ_KLUCZ`.
+Przykładowy plik `local.properties.example` znajduje się w repozytorium.

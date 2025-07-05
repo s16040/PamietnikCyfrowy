@@ -13,4 +13,6 @@ class NoteRepository(private val noteDao: NoteDao) {
     suspend fun delete(id: String) {
         noteDao.deleteById(id)
     }
+
+    fun getNoteById(id: String): Flow<Note?> = noteDao.getNoteById(id)
 }

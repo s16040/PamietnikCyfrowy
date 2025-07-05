@@ -1,0 +1,6 @@
+# Example local.properties for PamietnikCyfrowy
+# Set the path to your Android SDK here
+sdk.dir=/path/to/Android/Sdk
+
+# Google Maps API key
+MAPS_API_KEY=YOUR_GOOGLE_MAPS_KEY
