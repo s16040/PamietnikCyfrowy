@@ -10,6 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import com.example.digitaldiary.ui.theme.DigitalDiaryTheme
 import com.example.digitaldiary.viewmodel.MainViewModel
@@ -44,6 +45,7 @@ class MapActivity : ComponentActivity() {
 @Composable
 fun MapScreen(notes: List<com.example.digitaldiary.model.Note>) {
     val cameraPositionState = rememberCameraPositionState()
+    val context = LocalContext.current
 
     LaunchedEffect(notes) {
         if (notes.isNotEmpty()) {
@@ -72,7 +74,13 @@ fun MapScreen(notes: List<com.example.digitaldiary.model.Note>) {
             if (lat != null && lng != null) {
                 Marker(
                     position = LatLng(lat, lng),
-                    title = note.text
+                    title = note.text,
+                    onClick = {
+                        val intent = android.content.Intent(context, NoteDetailActivity::class.java)
+                        intent.putExtra("noteId", note.id)
+                        context.startActivity(intent)
+                        true
+                    }
                 )
             }
         }

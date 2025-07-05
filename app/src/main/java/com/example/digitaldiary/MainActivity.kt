@@ -7,6 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -90,7 +92,13 @@ fun MainScreen(viewModel: MainViewModel, modifier: Modifier = Modifier) {
             Text("Nagraj dźwięk")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { viewModel.submitNote() }, modifier = Modifier.fillMaxWidth()) {
+        Button(
+            onClick = {
+                viewModel.submitNote()
+                noteText = TextFieldValue("")
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Text("Zatwierdź notatkę")
         }
 
@@ -116,28 +124,30 @@ fun MainScreen(viewModel: MainViewModel, modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        notes.forEach { note ->
-            val lat = note.latitude ?: 0.0
-            val lng = note.longitude ?: 0.0
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        val intent = android.content.Intent(context, NoteDetailActivity::class.java)
-                        intent.putExtra("noteId", note.id)
-                        context.startActivity(intent)
+        LazyColumn {
+            items(notes, key = { it.id }) { note ->
+                val lat = note.latitude ?: 0.0
+                val lng = note.longitude ?: 0.0
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            val intent = android.content.Intent(context, NoteDetailActivity::class.java)
+                            intent.putExtra("noteId", note.id)
+                            context.startActivity(intent)
+                        }
+                ) {
+                    Text(
+                        "${'$'}{note.text} (${ '$'}lat, ${ '$'}lng)",
+                        modifier = Modifier.weight(1f)
+                    )
+                    Button(onClick = { viewModel.deleteNote(note.id) }) {
+                        Text("Usuń")
                     }
-            ) {
-                Text(
-                    "${'$'}{note.text} (${ '$'}lat, ${ '$'}lng)",
-                    modifier = Modifier.weight(1f)
-                )
-                Button(onClick = { viewModel.deleteNote(note.id) }) {
-                    Text("Usuń")
                 }
+                Spacer(modifier = Modifier.height(8.dp))
             }
-            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
