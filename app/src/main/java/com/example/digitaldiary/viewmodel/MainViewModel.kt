@@ -5,10 +5,14 @@ import android.location.Location
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnCompleteListener
 import com.example.digitaldiary.model.Note
+import com.example.digitaldiary.data.DiaryDatabase
+import com.example.digitaldiary.data.NoteRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,19 +31,24 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _audioUrl = MutableLiveData<String?>()
     val audioUrl: LiveData<String?> get() = _audioUrl
 
-    private val _notes = MutableLiveData<List<Note>>(emptyList())
-    val notes: LiveData<List<Note>> get() = _notes
+    private val repository: NoteRepository
+    val notes: LiveData<List<Note>>
 
     private val fusedLocationProviderClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(application)
+
+    init {
+        val dao = DiaryDatabase.getDatabase(application).noteDao()
+        repository = NoteRepository(dao)
+        notes = repository.allNotes.asLiveData()
+    }
 
     fun onNoteChange(newNote: String) {
         _note.value = newNote
     }
 
     fun captureLocation() {
-        // Użycie korutyn do obsługi lokalizacji
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 fusedLocationProviderClient.lastLocation.addOnCompleteListener(OnCompleteListener { task ->
                     if (task.isSuccessful && task.result != null) {
@@ -79,8 +88,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             audioUrl = _audioUrl.value
         )
 
-        val current = _notes.value ?: emptyList()
-        _notes.value = current + newNote
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.insert(newNote)
+        }
 
         // Wyczyszczenie pól po zapisaniu notatki
         _note.value = ""
