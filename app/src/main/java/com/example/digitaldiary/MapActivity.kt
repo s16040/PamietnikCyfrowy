@@ -17,7 +17,10 @@ import com.example.digitaldiary.viewmodel.MainViewModelFactory
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import androidx.compose.runtime.LaunchedEffect
 
 class MapActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels { MainViewModelFactory(application) }
@@ -40,15 +43,23 @@ class MapActivity : ComponentActivity() {
 
 @Composable
 fun MapScreen(notes: List<com.example.digitaldiary.model.Note>) {
-    val firstNote = notes.firstOrNull()
-    val defaultLatLng = if (firstNote?.latitude != null && firstNote.longitude != null) {
-        LatLng(firstNote.latitude, firstNote.longitude)
-    } else {
-        LatLng(0.0, 0.0)
-    }
+    val cameraPositionState = rememberCameraPositionState()
 
-    val cameraPositionState = rememberCameraPositionState {
-        position = com.google.android.gms.maps.model.CameraPosition.fromLatLngZoom(defaultLatLng, 10f)
+    LaunchedEffect(notes) {
+        if (notes.isNotEmpty()) {
+            val boundsBuilder = LatLngBounds.Builder()
+            notes.forEach { note ->
+                val lat = note.latitude
+                val lng = note.longitude
+                if (lat != null && lng != null) {
+                    boundsBuilder.include(LatLng(lat, lng))
+                }
+            }
+            val bounds = boundsBuilder.build()
+            cameraPositionState.animate(
+                CameraUpdateFactory.newLatLngBounds(bounds, 100)
+            )
+        }
     }
 
     GoogleMap(
