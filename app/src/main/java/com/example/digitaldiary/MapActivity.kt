@@ -40,9 +40,9 @@ class MapActivity : ComponentActivity() {
 
 @Composable
 fun MapScreen(notes: List<com.example.digitaldiary.model.Note>) {
-    val firstLocation = notes.firstOrNull()?.location?.split(",")
-    val defaultLatLng = if (firstLocation != null && firstLocation.size == 2) {
-        LatLng(firstLocation[0].toDoubleOrNull() ?: 0.0, firstLocation[1].toDoubleOrNull() ?: 0.0)
+    val firstNote = notes.firstOrNull()
+    val defaultLatLng = if (firstNote?.latitude != null && firstNote.longitude != null) {
+        LatLng(firstNote.latitude, firstNote.longitude)
     } else {
         LatLng(0.0, 0.0)
     }
@@ -56,16 +56,13 @@ fun MapScreen(notes: List<com.example.digitaldiary.model.Note>) {
         cameraPositionState = cameraPositionState
     ) {
         notes.forEach { note ->
-            val parts = note.location.split(",")
-            if (parts.size == 2) {
-                val lat = parts[0].toDoubleOrNull()
-                val lng = parts[1].toDoubleOrNull()
-                if (lat != null && lng != null) {
-                    Marker(
-                        position = LatLng(lat, lng),
-                        title = note.text
-                    )
-                }
+            val lat = note.latitude
+            val lng = note.longitude
+            if (lat != null && lng != null) {
+                Marker(
+                    position = LatLng(lat, lng),
+                    title = note.text
+                )
             }
         }
     }

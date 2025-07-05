@@ -105,7 +105,21 @@ fun MainScreen(viewModel: MainViewModel, modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(16.dp))
 
         notes.forEach { note ->
-            Text("- ${'$'}{note.text} (${ '$'}{note.location})")
+            val lat = note.latitude ?: 0.0
+            val lng = note.longitude ?: 0.0
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    "${'$'}{note.text} (${ '$'}lat, ${ '$'}lng)",
+                    modifier = Modifier.weight(1f)
+                )
+                Button(onClick = { viewModel.deleteNote(note.id) }) {
+                    Text("Usuń")
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }

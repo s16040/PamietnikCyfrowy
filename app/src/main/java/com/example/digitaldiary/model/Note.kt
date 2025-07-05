@@ -7,7 +7,8 @@ import androidx.room.PrimaryKey
 data class Note(
     @PrimaryKey val id: String = "",
     val text: String = "",
-    val location: String = "",
+    val latitude: Double? = null,
+    val longitude: Double? = null,
     val imageUrl: String? = null,
     val audioUrl: String? = null
 )

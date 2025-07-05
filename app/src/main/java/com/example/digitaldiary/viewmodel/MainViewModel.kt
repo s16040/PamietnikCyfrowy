@@ -79,11 +79,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun submitNote() {
         val text = _note.value ?: return
-        val locationString = _location.value?.let { "${it.latitude},${it.longitude}" } ?: ""
         val newNote = Note(
             id = System.currentTimeMillis().toString(),
             text = text,
-            location = locationString,
+            latitude = _location.value?.latitude,
+            longitude = _location.value?.longitude,
             imageUrl = _imageUrl.value,
             audioUrl = _audioUrl.value
         )
@@ -96,5 +96,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _note.value = ""
         _imageUrl.value = null
         _audioUrl.value = null
+    }
+
+    fun deleteNote(id: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.delete(id)
+        }
     }
 }
