@@ -22,6 +22,7 @@ import com.example.digitaldiary.ui.theme.DigitalDiaryTheme
 import com.example.digitaldiary.viewmodel.MainViewModel
 import com.example.digitaldiary.viewmodel.MainViewModelFactory
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.compose.rememberLauncherForActivityResult
 import android.app.Application
 import android.Manifest
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -58,6 +59,15 @@ fun MainScreen(viewModel: MainViewModel, modifier: Modifier = Modifier) {
     val audioUrl by viewModel.audioUrl.observeAsState()
     val notes by viewModel.notes.observeAsState(emptyList())
 
+    val imagePickerLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            viewModel.onImageSelected(uri?.toString())
+        }
+    val audioPickerLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            viewModel.onAudioSelected(uri?.toString())
+        }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -84,12 +94,12 @@ fun MainScreen(viewModel: MainViewModel, modifier: Modifier = Modifier) {
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { viewModel.addImage() }, modifier = Modifier.fillMaxWidth()) {
-            Text("Dodaj zdjęcie")
+        Button(onClick = { imagePickerLauncher.launch("image/*") }, modifier = Modifier.fillMaxWidth()) {
+            Text("Wybierz zdjęcie")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { viewModel.recordAudio() }, modifier = Modifier.fillMaxWidth()) {
-            Text("Nagraj dźwięk")
+        Button(onClick = { audioPickerLauncher.launch("audio/*") }, modifier = Modifier.fillMaxWidth()) {
+            Text("Wybierz nagranie")
         }
         Spacer(modifier = Modifier.height(16.dp))
         Button(

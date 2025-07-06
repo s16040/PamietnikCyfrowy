@@ -5,7 +5,7 @@ Prosta aplikacja w Kotlinie stworzona z użyciem Jetpack Compose. Umożliwia zap
 ## Najważniejsze funkcje
 - przechowywanie notatek w bazie Room
 - pobieranie bieżącej lokalizacji urządzenia (wymaga udzielenia uprawnienia)
-- możliwość dodania zdjęcia i nagrania (przykładowe implementacje)
+- możliwość wybrania zdjęcia i pliku audio z pamięci urządzenia
 - lista notatek z opcją usuwania (wyświetlana w komponencie LazyColumn)
 - wyświetlanie notatek na mapie z markerami
 - podgląd pojedynczej notatki z możliwością odtworzenia nagrania

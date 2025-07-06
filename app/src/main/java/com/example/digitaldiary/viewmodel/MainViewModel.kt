@@ -63,18 +63,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun addImage() {
-        // W prawdziwej aplikacji tutaj uruchamiany byłby intent do aparatu
-        // lub wyboru zdjęcia z galerii. Na potrzeby przykładowej implementacji
-        // zapisujemy jedynie przykładową nazwę pliku.
-        _imageUrl.value = "image_${System.currentTimeMillis()}.jpg"
+    fun onImageSelected(uri: String?) {
+        _imageUrl.value = uri
     }
 
-    fun recordAudio() {
-        // Podobnie jak przy zdjęciu, pełna implementacja wymagałaby użycia
-        // odpowiednich API Androida. Tutaj jedynie ustawiamy przykładową ścieżkę
-        // do nagranego pliku dźwiękowego.
-        _audioUrl.value = "audio_${System.currentTimeMillis()}.m4a"
+    fun onAudioSelected(uri: String?) {
+        _audioUrl.value = uri
     }
 
     fun submitNote() {
